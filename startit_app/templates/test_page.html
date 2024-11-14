@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+{% if user.is_authenticated %}
+<main>
+    <section class="job-detail">
+        <div class="container">
+            <h1 class="title">{{ test.title }}</h1>
+                <h3 class="job-detail_data">Цель<span>{{tsar}}</span></h3>
+                <p class="job-detail_content"><strong>Описание задания: </strong>{{ test.description }}
+                    <div class="task">
+                        <h1>{{ test.task }}</h1>
+                    </div>
+                </p>
+                <div class="job-detail_skills">
+                    <h3 class="job-detail_titt">Ваш ответ</h3>
+                    <textarea type="text" id="userInput" placeholder="Введите ваш ответ здесь" class="text"></textarea>
+                    <br>
+                    <div style='display:flex; justify-content: space-between;'>
+                        <button class="check" onclick="checkAnswer()">Проверить</button>
+                        <button class="check" type="submit">Проверить с gpt</button>
+                    </div>
+                </div>
+                <div class="job-detail_skills">
+                    <h3>Резульат:</h3>
+                    <div id="result"></div>
+                    <div id="response"></div>
+                </div>
+                <h3 class="job-detail_title">Автор: {{ test.author }}</h3>
+                <p class="job-detail_content"><strong>Дата публикации:</strong>{{ test.created_at }}</p>
+            </div>
+        </section>
+    </main>
+    <script>
+        // Экранируем значение correct_answer для использования в JS
+        const correctAnswer = "{{ correct_answer|escapejs }}"; 
+        
+        const prefixText = "<p>";
+        const suffixText = "</p>";
+    
+        function checkAnswer() {
+            // Получаем введенный пользователем ответ и убираем пробелы в начале и конце
+            const userInput = document.getElementById('userInput').value.trim();
+            const fullAnswer = prefixText + userInput + suffixText;
+    
+            // Сравниваем ответ пользователя с корректным ответом
+            const resultElement = document.getElementById('result');
+            if (fullAnswer === correctAnswer) {
+                resultElement.innerText = 'Правильно!';
+                resultElement.style.color = 'green';
+            } else {
+                resultElement.innerText = 'Неправильно. Попробуйте еще раз.';
+                resultElement.style.color = 'red';
+            }
+        }
+    </script>
+    
+    <script src="{% static './js/gpt.js' %}"></script>
+{% else %}
+    <section class="access">
+        <div class="container">
+            <h1 class="title">Вы анонимный пользователь</h1>
+            <p class="dark-text">Чтобы работать с приложением, Вам нужно будет пройти регистрацию и авторизацию</p>
+            <div class="access-action">
+                <a href="{% url 'sign_up_page' %}" class="dark-b">Регистрация</a>
+                <a href="{% url 'login_page' %}" class="dark-b">Вход</a>
+            </div>
+        </div>
+    </section>
+{% endif %}
+{% endblock %}

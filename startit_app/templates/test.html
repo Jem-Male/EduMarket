@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}Все вакансии{% endblock %}
+
+
+{% block content %}
+{% if user.is_authenticated %}
+<section class="jobs">
+    <div class="container">
+        <h2 class="title">Все задания</h2>
+        {% for test in test %}
+        <div class="jobs-list">
+                <div class="jobs-card">
+                    <div>
+                        <h3 class="jobs-card_title">Название задания: {{ test.title|truncatechars:30 }}</h3>
+                        <h3 class="jobs-card_company">Цель: {{ test.tsar|truncatechars:30 }}</h3>
+                        <h3 class="jobs-card_title">
+                            автор: 
+                        {% if test.author == 'не указано'%}
+                        {{ test.author }}
+                        {% else %}
+                        {{ test.author }} 
+                        {% endif %}
+                        </h3>
+                    </div>
+                <a href="{% url 'test_detail_page' pk=test.pk %}" class="dark-button">Начать</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% else %}
+<section class="access">
+    <div class="container">
+        <h1 class="title">Вы анонимный пользователь</h1>
+        <p class="dark-text">Чтобы работать с приложением, Вам нужно будет пройти регистрацию и авторизацию</p>
+        <div class="access-action">
+            <a href="{% url 'sign_up_page' %}" class="dark-b">Регистрация</a>
+            <a href="{% url 'login_page' %}" class="dark-b">Вход</a>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}
